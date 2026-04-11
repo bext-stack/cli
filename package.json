@@ -1,0 +1,40 @@
+{
+  "name": "@bext-stack/cli",
+  "version": "0.2.0",
+  "description": "bext CLI — high-performance application deployment platform. Thin npm wrapper that downloads the native bext binary for your platform.",
+  "bin": {
+    "bext": "bin/bext.js"
+  },
+  "files": [
+    "bin",
+    "scripts",
+    "README.md"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "keywords": [
+    "bext",
+    "cli",
+    "ssr",
+    "nextjs",
+    "react",
+    "deployment",
+    "waf",
+    "cache",
+    "server"
+  ],
+  "license": "MIT",
+  "homepage": "https://bext-stack.github.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bext-stack/bext.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/bext-stack/bext/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
