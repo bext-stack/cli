@@ -1,7 +1,7 @@
 {
   "name": "@bext-stack/cli",
-  "version": "0.2.0",
-  "description": "bext CLI — high-performance application deployment platform. Thin npm wrapper that downloads the native bext binary for your platform.",
+  "version": "0.2.10",
+  "description": "Bext CLI with the matched PRISM framework and tsc-rs compiler; verifies and caches the portable native engine.",
   "bin": {
     "bext": "bin/bext.js"
   },
@@ -11,7 +11,7 @@
     "README.md"
   ],
   "scripts": {
-    "postinstall": "node scripts/postinstall.js"
+    "postinstall": "node scripts/postinstall.js || true"
   },
   "keywords": [
     "bext",
@@ -25,7 +25,7 @@
     "server"
   ],
   "license": "MIT",
-  "homepage": "https://bext-stack.github.io",
+  "homepage": "https://bext.dev/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bext-stack/bext.git",
@@ -36,5 +36,9 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@bext-stack/framework": "0.2.0",
+    "@bext-stack/tsc-rs": "0.4.2"
   }
 }

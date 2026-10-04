@@ -1,18 +1,24 @@
 #!/usr/bin/env node
 const { spawnSync } = require("node:child_process");
-const { existsSync } = require("node:fs");
+const { pathToFileURL } = require("node:url");
 const path = require("node:path");
+const { ensureBinary, log } = require("../scripts/runtime.js");
 
-const binaryPath = path.join(__dirname, "..", "vendor", process.platform === "win32" ? "bext.exe" : "bext");
-
-if (!existsSync(binaryPath)) {
-  console.error("[@bext-stack/cli] bext binary not found at " + binaryPath);
-  console.error("[@bext-stack/cli] The postinstall step may have failed. Run:");
-  console.error("    node " + path.join(__dirname, "..", "scripts", "postinstall.js"));
-  console.error("[@bext-stack/cli] Or install manually:");
-  console.error("    curl -fsSL https://bext.dev/install | sh");
-  process.exit(1);
-}
-
-const result = spawnSync(binaryPath, process.argv.slice(2), { stdio: "inherit" });
-process.exit(result.status ?? 1);
+(async () => {
+  try {
+    const binary = await ensureBinary();
+    const { resolveBinaryPath } = await import(pathToFileURL(require.resolve("@bext-stack/tsc-rs/lib/resolve.mjs")));
+    const framework = path.dirname(require.resolve("@bext-stack/framework/jsx"));
+    const env = { ...process.env,
+      TSCRS_PATH: process.env.TSCRS_PATH || resolveBinaryPath(),
+      BEXT_SHARED_FRAMEWORK_DIR: process.env.BEXT_SHARED_FRAMEWORK_DIR || framework,
+    };
+    const result = spawnSync(binary, process.argv.slice(2), { stdio: "inherit", env });
+    if (result.error) throw result.error;
+    if (result.signal) process.kill(process.pid, result.signal);
+    else process.exit(result.status ?? 1);
+  } catch (error) {
+    log(error.message);
+    process.exit(1);
+  }
+})();

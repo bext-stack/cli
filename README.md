@@ -1,51 +1,32 @@
 # @bext-stack/cli
 
-Thin npm wrapper around the [`bext`](https://github.com/bext-stack/bext) CLI binary. Downloads the right native binary for your platform on install.
-
-## Install
+Install the Bext engine with its matching PRISM framework and TypeScript compiler:
 
 ```sh
-npm i -g @bext-stack/cli
-# or one-shot
-npx @bext-stack/cli --help
+npm install -g @bext-stack/cli
+bext --version
+bext run ./my-site
 ```
 
-## Usage
+`npx @bext-stack/cli --help` and `bunx @bext-stack/cli --help` also work.
+The first invocation downloads the versioned Linux x64 engine from
+`get.bext.dev`, decompresses it, verifies SHA256, and stores it under
+`~/.cache/bext-stack-cli/<version>/`. Subsequent invocations reuse that file.
+An npm postinstall hook prefetches it when package scripts are enabled.
 
-```sh
-bext run          # auto-detect framework, build, serve
-bext dev          # dev mode with file watching
-bext build        # build the SSR bundle for production
-bext deploy       # build + swap
-bext cache purge  # purge the cache
-bext health       # platform health check
-```
+Bext 0.2.10 is paired with `@bext-stack/framework` 0.2.0 and
+`@bext-stack/tsc-rs` 0.4.2 through exact npm dependencies. The CLI sets their
+runtime paths when it invokes the engine. This release supports Linux x64
+with glibc 2.31 or newer; other builds are listed on the
+[installation page](https://docs.bext.dev/getting-started/installation).
 
-See `bext --help` for the full command list.
+Overrides:
 
-## How it works
+- `BEXT_CLI_BINARY=/path/to/bext` uses an existing executable.
+- `BEXT_CLI_CACHE_DIR=/path` selects the download cache.
+- `BEXT_CLI_SKIP_DOWNLOAD=1` skips postinstall prefetching.
+- `TSCRS_PATH` and `BEXT_SHARED_FRAMEWORK_DIR` select custom compiler/framework paths.
 
-On install, `scripts/postinstall.js` downloads the right `bext` binary for your platform from [GitHub releases](https://github.com/bext-stack/bext/releases) and places it at `packages/cli/vendor/bext`. The `bin/bext.js` shim then execs that binary.
+[Documentation](https://docs.bext.dev/) · [Releases](https://github.com/bext-stack/bext/releases)
 
-### Supported platforms
-
-- `linux-x64`, `linux-arm64`
-- `darwin-x64`, `darwin-arm64`
-- `win32-x64`
-
-### Overrides
-
-- `BEXT_CLI_SKIP_DOWNLOAD=1` — skip the binary download (useful in CI images that already have `bext` on `PATH`).
-- `BEXT_CLI_BINARY=/path/to/bext` — use a local binary instead of downloading.
-
-## Alternatives
-
-If you'd rather not use npm, install directly:
-
-```sh
-curl -fsSL https://bext.dev/install | sh
-```
-
-## License
-
-MIT — Part of the [bext](https://github.com/bext-stack/bext) stack.
+MIT.
